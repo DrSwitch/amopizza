@@ -26,21 +26,17 @@ public class JsonUrl extends AsyncTask<String, String, String> {
         String jsonString="";
 
         try {
-            URL oracle = new URL(strings[0]); // URL to Parse
+            System.out.println("Стринг = " + strings[0]);
+            URL oracle = new URL("http://amopizza.ru/goods2.json"); // URL to Parse
             URLConnection yc = oracle.openConnection();
             BufferedReader in = new BufferedReader(new InputStreamReader(yc.getInputStream()));
             String inputLine;
+            String inputString = "";
             in.readLine();
             System.out.println("Начало" + in.readLine());
             while ((inputLine = in.readLine()) != null) {
-                JsonArray a = (JsonArray) parser.parse(inputLine);
+                inputString += inputLine;
                 System.out.println("какая-то inputLine = " + inputLine);
-
-                // Loop through each item
-                for (Object o : a) {
-                    JSONObject datos = (JSONObject)o;
-                    System.out.println("какая-то датос"+datos);
-                }
             }
             System.out.println("Конец");
             in.close();
