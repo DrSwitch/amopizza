@@ -2,6 +2,7 @@ package com.example.drswitch.amopizza;
 
 import android.os.AsyncTask;
 
+import com.example.drswitch.amopizza.entity.Category;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 
@@ -20,26 +21,32 @@ import java.net.URLConnection;
 
 public class JsonUrl extends AsyncTask<String, String, String> {
 
+    public JsonUrl(MyCustomCallBack callback) {
+        this.callback = callback;
+    }
+
     @Override
     protected String doInBackground(String... strings) {
         JsonParser parser = new JsonParser();
         String jsonString="";
 
         try {
-            System.out.println("Стринг = " + strings[0]);
-            URL oracle = new URL("http://amopizza.ru/goods2.json"); // URL to Parse
-            URLConnection yc = oracle.openConnection();
+            //System.out.println("Стринг = " + strings[0]);
+            URL url = new URL(strings[0]); // URL to Parse
+            URLConnection yc = url.openConnection();
+
             BufferedReader in = new BufferedReader(new InputStreamReader(yc.getInputStream()));
             String inputLine;
             String inputString = "";
-            in.readLine();
-            System.out.println("Начало" + in.readLine());
+            //System.out.println("Начало " + in.toString());
             while ((inputLine = in.readLine()) != null) {
                 inputString += inputLine;
-                System.out.println("какая-то inputLine = " + inputLine);
+                //System.out.println("какая-то inputLine = " + inputLine);
             }
-            System.out.println("Конец");
+           // System.out.println("Конец inputString = " + inputString);
+            jsonString = inputString;
             in.close();
+
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -49,4 +56,19 @@ public class JsonUrl extends AsyncTask<String, String, String> {
         return jsonString;
     }
 
+    private MyCustomCallBack callback;
+
+    @Override
+    protected void onPostExecute(String s) {
+        super.onPostExecute(s);
+        //System.out.println("s = " + s);
+
+        if(callback!=null)
+            callback.outputInfo(s);
+    }
+
+    public interface MyCustomCallBack
+    {
+        public void outputInfo(String jsonString);
+    }
 }
